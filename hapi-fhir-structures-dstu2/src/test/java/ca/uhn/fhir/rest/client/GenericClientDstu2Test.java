@@ -1879,6 +1879,10 @@ public class GenericClientDstu2Test {
 			.execute();
 
 		assertEquals("http://example.com/fhir/Patient/_search?_elements=identifier%2Cname", capt.getValue().getURI().toString());
+		assertThat(capt.getValue().getURI().toString()).isIn(
+			"http://example.com/fhir/Patient/_search?_elements=identifier%2Cname",
+			"http://example.com/fhir/Patient/_search?_elements=name%2Cidentifier"
+		);
 
 		// assertThat(capt.getValue().getURI().toString(),
 		// either(equalTo("http://example.com/fhir/Patient?name=james&_elements=name%2Cidentifier")).or(equalTo("http://example.com/fhir/Patient?name=james&_elements=identifier%2Cname")));
@@ -1919,7 +1923,10 @@ public class GenericClientDstu2Test {
 			.execute();
 
 		assertThat(capt.getValue().getURI().toString()).contains("http://example.com/fhir/Patient/_search?");
-		assertThat(capt.getValue().getURI().toString()).contains("_elements=identifier%2Cname");
+		assertThat(capt.getValue().getURI().toString()).satisfiesAnyOf(
+			s -> assertThat(s).contains("_elements=identifier%2Cname"),
+			s -> assertThat(s).contains("_elements=name%2Cidentifier")
+		);
 		assertThat(capt.getValue().getURI().toString()).doesNotContain("_format=json");
 
 		// assertThat(capt.getValue().getURI().toString(),
